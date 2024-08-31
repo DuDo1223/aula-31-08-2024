@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static '/style.css' %}">
+    <link rel="stylesheet" href="{% static '/stylegaleria.css' %}">
+</head>
+
+<body>
+    <div class="conteudo">
+        <header>
+            <nav>
+                <h1>Conheça Xanxerê</h1>
+
+                <ul class="menu">
+                    <li><a href="/">Pontos turisticos</a></li>
+                    <li><a href="/historia">Historia e cultura</a></li>
+                    <li><a href="/galeria" style="text-decoration: underline;">Galeria de fotos</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div id="galeria"></div>
+    </div>
+
+    <script>
+        const tamanhoExpandido = "400px";
+        const tamanhoNormal = "300px";
+        const galeria = document.getElementById("galeria");
+        // lista das fotos e legendas
+        const urlFotosPrimarias = {
+            "Agenor Home Made": "{% static '/atracoes/Agenor Home Made.png' %}",
+            "Café do Mestre": "{% static '/atracoes/Café do Mestre.jpg' %}",
+            "Cascata S. Manela": "{% static '/atracoes/Cascata S. Manela.png' %}",
+            "CTG Espelho da Tradição": "{% static '/atracoes/CTG Espelho da Tradição.jpg' %}",
+            "Ecoparque Xanxerê": "{% static '/atracoes/Ecoparque Xanxerê.jpg' %}",
+            "Fino Sabor": "{% static '/atracoes/Fino Sabor.jpg' %}",
+            "Heróis do Hambúrguer": "{% static '/atracoes/Herois do Hamburguer.png' %}",
+            "Igreja Matriz Xanxerê": "{% static '/atracoes/Igreja Matriz Xanxerê.jpg' %}",
+            "Kartódromo Jean Paulo Picinatto": "{% static '/atracoes/Kartódromo Jean Paulo Picinatto.jpg' %}",
+            "O Costelão": "{% static '/atracoes/O Costelão.png' %}",
+            "O Pastelão": "{% static '/atracoes/O Pastelão.jpg' %}",
+            "Padoça do Mano": "{% static '/atracoes/Padoça do Mano.png' %}",
+            "Parque de Exposições Rovilho Bortoluzzi": "{% static '/atracoes/Parque de Exposições Rovilho Bortoluzzi.png' %}",
+            "Pastelândia": "{% static '/atracoes/Pastelandia.png' %}",
+            "Praça Tiradentes": "{% static '/atracoes/Praça Tiradentes.png' %}",
+            "Restaurante Bebber": "{% static '/atracoes/Restaurante Bebber.jpg' %}",
+        };
+        // lista das fotos segundarias
+        const urlFotosSecundarias = {
+            "Restaurante Bebber": "{% static '/atracoes/Restaurante Bebber prato.png' %}",
+            "Agenor Home Made": "{% static '/atracoes/Agenor Home Made Prato.png' %}",
+            "Café do Mestre": "{% static '/atracoes/Café do Mestre prato.jpg' %}",
+            "Cascata S. Manela": "{% static '/atracoes/Cascata S. Manela Prato.png' %}",
+            "CTG Espelho da Tradição": "{% static '/atracoes/CTG Espelho da Tradição Prato.jpg' %}",
+            "Ecoparque Xanxerê": "{% static '/atracoes/Ecoparque Xanxerê Prato.jfif' %}",
+            "Fino Sabor": "{% static '/atracoes/Fino Sabor prato.jpg' %}",
+            "Heróis do Hambúrguer": "{% static '/atracoes/Herois do Hamburguer prato.jpg' %}",
+            "O Costelão": "{% static '/atracoes/O Costelão prato.png' %}",
+            "O Pastelão": "{% static '/atracoes/O Pastelão prato.png' %}",
+            "Padoça do Mano": "{% static '/atracoes/Padoça do Mano  Prato.jpg' %}",
+            "Pastelândia": "{% static '/atracoes/Pastelandia prato.png' %}",
+            "Igreja Matriz Xanxerê": "{% static '/atracoes/Igreja Matriz Xanxerê.jfif' %}",
+            "Kartódromo Jean Paulo Picinatto": "{% static '/atracoes/Kartódromo Jean Paulo Picinatto Prato.webp' %}"
+        }
+        const ids = Object.keys(urlFotosPrimarias);
+        for (const id of ids) {
+            const fotoLegenda = document.getElementById('galeria').appendChild(document.createElement('div'));
+            fotoLegenda.className = "fotoLegenda";
+            fotoLegenda.id = id;
+            fotoLegenda.innerHTML = `<img src="${urlFotosPrimarias[id]}" onmouseleave="visualizar(this)" onmouseenter="visualizar(this)" onclick="expandir(this)">${id}`;
+            galeria.appendChild(fotoLegenda);
+        }
+        const fotosLegendas = document.querySelectorAll(".fotoLegenda");
+        /*
+        Troca para a imagem secundária
+        */
+        function visualizar(event) {
+            for (let i = 0; i < fotosLegendas.length; i++) {
+                const fotoLegenda = fotosLegendas[i];
+                const foto = fotoLegenda.querySelector("img");
+                if (fotoLegenda.id == event.parentElement.id) {
+                    const fotosrc = new URL(foto.src).pathname
+                    if (fotosrc != urlFotosSecundarias[fotoLegenda.id] && urlFotosSecundarias[fotoLegenda.id] && foto.style.width == tamanhoExpandido) {
+                        foto.src = urlFotosSecundarias[fotoLegenda.id];
+                    } else {
+                        foto.src = urlFotosPrimarias[fotoLegenda.id];
+
+                    }
+                }
+            }
+        }
+        function expandir(event) {
+
+
+            for (let i = 0; i < fotosLegendas.length; i++) {
+                const fotoLegenda = fotosLegendas[i];
+                const foto = fotoLegenda.querySelector("img");
+                if (fotoLegenda.id == event.parentElement.id && foto.style.width != tamanhoExpandido) {
+                    foto.style.transition = "width 0.3s";
+                    foto.style.width = tamanhoExpandido;
+                    fotoLegenda.style.transition = "font-size 0.2s";
+                    fotoLegenda.style.fontSize = "30px";
+                } else {
+
+                    foto.style.transition = "width 0.2s";
+                    fotoLegenda.style.fontSize = "20px";
+                    foto.style.width = tamanhoNormal;
+                }
+            }
+            visualizar(event);
+        }
+    </script>
+</body>
+
+</html>
